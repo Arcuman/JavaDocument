@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>Welcome!</h1>
+<h2><a href="home">See all documents</a></h2>
+<div>
+    <h1>New document:</h1>
+    <form th:action="@{/addDocument}"
+          th:object="${documentForm}" method="POST">
+        <p>Title:
+            <input type="text" th:field="*{title}"/>
+        </p>
+        <p> Description:
+            <input type="text" th:field="*{description}"/>
+        </p>
+        <p> Link:
+            <input type="text" th:field="*{link}"/>
+        </p>
+        <input class="button-main-page" type="submit" value="Add"/>
+    </form>
+</div>
+
+</body>
+</html>

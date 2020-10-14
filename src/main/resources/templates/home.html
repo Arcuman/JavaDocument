@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+<h1>Welcome!</h1>
+<h2><a href="addDocument">Manage employees</a></h2>
+<div class="container">
+    <table class="container" border="1">
+        <tr>
+            <th><h1>title</h1></th>
+            <th><h1>description</h1></th>
+            <th><h1>link</h1></th>
+        </tr>
+        <tr th:each="document : ${documents}">
+            <td th:utext="${document.title}">...</td>
+            <td th:utext="${document.description}">...</td>
+            <td th:utext="${document.link}">...</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
