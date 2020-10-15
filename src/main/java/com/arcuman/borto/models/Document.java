@@ -1,9 +1,6 @@
 package com.arcuman.borto.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Document {
@@ -11,19 +8,24 @@ public class Document {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer idDocument;
 
-    private String Title;
+    private String title;
 
-    private String Description;
+    private String description;
 
-    private String Link;
+    private String link;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User owner;
 
     public Document() {
     }
 
-    public Document(String title, String description, String link) {
-        Title = title;
-        Description = description;
-        Link = link;
+    public Document(String title, String description, String link, User user) {
+        this.title = title;
+        this.description = description;
+        this.link = link;
+        this.owner = user;
     }
 
     public Integer getIdDocument() {
@@ -35,26 +37,34 @@ public class Document {
     }
 
     public String getTitle() {
-        return Title;
+        return title;
     }
 
     public void setTitle(String title) {
-        Title = title;
+        this.title = title;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
     public void setDescription(String description) {
-        Description = description;
+        this.description = description;
     }
 
     public String getLink() {
-        return Link;
+        return link;
     }
 
     public void setLink(String link) {
-        Link = link;
+        this.link = link;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
 }

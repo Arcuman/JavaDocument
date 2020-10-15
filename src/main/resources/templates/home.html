@@ -8,18 +8,24 @@
     <input type="submit" value="Sign Out"/>
 </form>
 <h1>Welcome!</h1>
-<h2><a href="addDocument">Manage employees</a></h2>
+<h2><a href="addDocument">Add document</a></h2>
+<form method="post" th:action="@{/findDocument}">
+    <input type="text" name="description" placeholder="description">
+    <button type="submit">Find</button>
+</form>
 <div class="container">
     <table class="container" border="1">
         <tr>
             <th><h1>title</h1></th>
             <th><h1>description</h1></th>
             <th><h1>link</h1></th>
+            <th><h1>Owner</h1></th>
         </tr>
         <tr th:each="document : ${documents}">
             <td th:utext="${document.title}">...</td>
             <td th:utext="${document.description}">...</td>
             <td th:utext="${document.link}">...</td>
+            <td th:utext="${document.owner.getUsername()}">...</td>
         </tr>
     </table>
 </div>

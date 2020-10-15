@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Add Person</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/style.css}"/>
+</head>
+<body>
+<div>
+    <h1>Edit employee:</h1>
+    <form th:action="@{/user}" th:object="${user}" method="POST">
+            <input type="hidden" th:field="*{idUser}"/>
+        <p>UserName:
+            <input type="text" th:field="*{username}"/>
+        </p>
+        <input class="button-main-page" type="submit" value="Edit"/>
+    </form>
+</div>
+</body>
+</html>
