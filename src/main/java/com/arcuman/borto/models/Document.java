@@ -14,6 +14,8 @@ public class Document {
 
     private String link;
 
+    private String filename;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User owner;
@@ -26,6 +28,14 @@ public class Document {
         this.description = description;
         this.link = link;
         this.owner = user;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public Integer getIdDocument() {

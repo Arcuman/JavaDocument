@@ -9,7 +9,8 @@
 <div>
     <h1>New document:</h1>
     <form th:action="@{/addDocument}"
-          th:object="${documentForm}" method="POST">
+          th:object="${documentForm}" method="POST"
+            enctype="multipart/form-data">
         <p>Title:
             <input type="text" th:field="*{title}"/>
         </p>
@@ -18,6 +19,9 @@
         </p>
         <p> Link:
             <input type="text" th:field="*{link}"/>
+        </p>
+        <p> File:
+            <input type="file" name="file"/>
         </p>
         <input class="button-main-page" type="submit" value="Add"/>
     </form>

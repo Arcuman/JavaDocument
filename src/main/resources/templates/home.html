@@ -2,6 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Spring Security Example</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <form th:action="@{/logout}" method="post">
@@ -19,13 +20,28 @@
             <th><h1>title</h1></th>
             <th><h1>description</h1></th>
             <th><h1>link</h1></th>
+            <th><h1>file</h1></th>
             <th><h1>Owner</h1></th>
+            <th><h1>Like Count</h1></th>
+            <th><h1>Like Action</h1></th>
+            <th><h1>Dislike</h1></th>
+            <th><h1>Dislike Action</h1></th>
+            <th><h1></h1></th>
         </tr>
         <tr th:each="document : ${documents}">
             <td th:utext="${document.title}">...</td>
             <td th:utext="${document.description}">...</td>
             <td th:utext="${document.link}">...</td>
+            <td >
+                <img  th:src="@{/img/{id}(id=${document.filename})}" width="300" height="300"  alt="img"/>
+            </td>
             <td th:utext="${document.owner.getUsername()}">...</td>
+            <td>count like</td>
+            <td>like button</td>
+            <td>count dislike</td>
+            <td>dislike button</td>
+            <td><a th:href="@{/comment/{id}(id=${document.idDocument})}">comment</a></td>
+            <td><a th:href="@{/comment/{id}(id=${document.idDocument})}">comment</a></td>
         </tr>
     </table>
 </div>

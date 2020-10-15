@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Spring Security Example</title>
+</head>
+<body>
+<h1>Comment List</h1>
+<form th:action="@{/comment/addComment}" th:object="${document}" method="POST">
+    <p>Message:
+        <input type="text" name="message"/>
+    </p>
+    <input type="hidden" th:field="*{idDocument}"/>
+    <input class="button-main-page" type="submit" value="Add"/>
+</form>
+<div class="container">
+    <table class="container" border="1">
+        <tr>
+            <th><h1>Comment</h1></th>
+            <th><h1>Role</h1></th>
+            <th></th>
+        </tr>
+        <tr th:each="comment : ${comments}">
+            <td th:utext="${comment.commentMessage}">...</td>
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
