@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Spring Security Example</title>
+    <title>Document</title>
 </head>
 <body>
-<h1>Welcome!</h1>
+<h1>Add document!</h1>
 <h2><a href="home">See all documents</a></h2>
 <div>
     <h1>New document:</h1>
     <form th:action="@{/addDocument}"
-          th:object="${documentForm}" method="POST"
+          th:object="${documentDTO}" method="POST"
             enctype="multipart/form-data">
         <p>Title:
             <input type="text" th:field="*{title}"/>

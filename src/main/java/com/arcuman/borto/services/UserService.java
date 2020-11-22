@@ -1,20 +1,21 @@
 package com.arcuman.borto.services;
 
-import com.arcuman.borto.Repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import com.arcuman.borto.models.User;
+import lombok.extern.log4j.Log4j2;
 
-@Service
-public class UserService implements UserDetailsService {
-    @Autowired
-    private UserRepository userRepository;
+import java.util.List;
+public interface UserService {
+  User register(User user);
 
+  List<User> getAll();
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username);
-    }
+  User findByUsername(String username);
+
+  User findById(Long id);
+
+  void delete(Long id);
+
+  boolean isExistUsername(String username);
+
+  boolean isExistEmail(String email);
 }

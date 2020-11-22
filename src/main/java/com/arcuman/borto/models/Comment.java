@@ -1,61 +1,30 @@
 package com.arcuman.borto.models;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import lombok.Data;
+
 import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
-public class Comment {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer idComment;
+@Table(name = "Comments")
+@Data
+public class Comment extends BaseEntity {
 
-    private String commentMessage;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User owner;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "document_id")
-    private Document document;
-
+    @Column(name = "comment")
+    private String comment;
     public Comment() {
+        super(new Date(), new Date(), Status.ACTIVE);
+    }
+    public Comment(String commentMessage) {
+        super(new Date(), new Date(), Status.ACTIVE);
+        this.comment = commentMessage;
     }
 
-    public Comment(String commentMessage, User owner, Document document) {
-        this.commentMessage = commentMessage;
-        this.owner = owner;
-        this.document = document;
-    }
+    @ManyToOne( fetch = FetchType.LAZY)
+    private User user;
 
-    public Integer getIdComment() {
-        return idComment;
-    }
-
-    public void setIdComment(Integer idComment) {
-        this.idComment = idComment;
-    }
-
-    public String getCommentMessage() {
-        return commentMessage;
-    }
-
-    public void setCommentMessage(String commentMessage) {
-        this.commentMessage = commentMessage;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
+    @ManyToOne( fetch = FetchType.LAZY)
+    private Document document;
 }

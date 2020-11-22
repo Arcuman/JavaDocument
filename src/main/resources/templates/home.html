@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
-    <title>Spring Security Example</title>
+    <title>Home</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>
-<h1>Welcome!</h1>
+<h1>Document List</h1>
 <h2><a href="addDocument">Add document</a></h2>
 <form method="post" th:action="@{/findDocument}">
     <input type="text" name="description" placeholder="description">
@@ -40,7 +40,6 @@
             <td>like button</td>
             <td>count dislike</td>
             <td>dislike button</td>
-            <td><a th:href="@{/comment/{id}(id=${document.idDocument})}">comment</a></td>
             <td><a th:href="@{/comment/{id}(id=${document.idDocument})}">comment</a></td>
         </tr>
     </table>

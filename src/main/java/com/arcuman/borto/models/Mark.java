@@ -1,65 +1,32 @@
 package com.arcuman.borto.models;
 
+import lombok.Data;
+
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
-public class Mark {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer idMark;
+@Table(name = "marks")
+@Data
+public class Mark extends BaseEntity {
 
-    @ElementCollection(targetClass = TypeMark.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "mark_type",joinColumns = @JoinColumn(name = "mark_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<TypeMark> roles;
+  @Enumerated(EnumType.STRING)
+  @Column(name = "mark")
+  private TypeMark typeMark;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User owner;
+  public Mark() {
+    super();
+  }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "document_id")
-    private Document document;
+  public Mark(TypeMark typeMark) {
+    super(new Date(), new Date(), Status.ACTIVE);
+    this.typeMark = typeMark;
+  }
 
-    public Mark() {
-    }
+  @ManyToOne( fetch = FetchType.LAZY)
+  private User user;
 
-    public Mark(Set<TypeMark> roles, User owner, Document document) {
-        this.roles = roles;
-        this.owner = owner;
-        this.document = document;
-    }
-
-    public Integer getIdMark() {
-        return idMark;
-    }
-
-    public void setIdMark(Integer idMark) {
-        this.idMark = idMark;
-    }
-
-    public Set<TypeMark> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<TypeMark> roles) {
-        this.roles = roles;
-    }
-
-    public User getOwner() {
-        return owner;
-    }
-
-    public void setOwner(User owner) {
-        this.owner = owner;
-    }
-
-    public Document getDocument() {
-        return document;
-    }
-
-    public void setDocument(Document document) {
-        this.document = document;
-    }
+  @ManyToOne( fetch = FetchType.LAZY)
+  private Document document;
 }

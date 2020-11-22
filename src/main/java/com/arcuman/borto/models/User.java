@@ -1,102 +1,44 @@
 package com.arcuman.borto.models;
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 @Entity
-@Table(name="usr")
-public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer idUser;
+@Table(name = "users")
+@Data
+public class User extends BaseEntity {
 
-    private String username;
+  @Column(name = "username")
+  private String username;
 
-    private String password;
+  @Column(name = "first_name")
+  private String firstName;
 
-    private boolean active;
+  @Column(name = "last_name")
+  private String lastName;
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
-    @Enumerated(EnumType.STRING)
-    private Set<Role> roles;
+  @Column(name = "email")
+  private String email;
 
-    public User() {
-    }
+  @Column(name = "password")
+  private String password;
 
-    public User(String username, String password, boolean active, Set<Role> roles) {
-        this.username = username;
-        this.password = password;
-        this.active = active;
-        this.roles = roles;
-    }
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "user_roles",
+      joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+      inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
+  private List<Role> roles;
 
-    public Integer getIdUser() {
-        return idUser;
-    }
+  @OneToMany( cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id")
+  private List<Document> documents;
 
-    public void setIdUser(Integer idUser) {
-        this.idUser = idUser;
-    }
+  @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+  private List<Comment> comments;
 
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return isActive();
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
+  @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+  private List<Mark> marks;
 }
