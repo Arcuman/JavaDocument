@@ -23,9 +23,10 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Log4j2
 @RestController
-@RequestMapping(value = "/api/v1/documents/")
+@RequestMapping(value = "/api/v1/documents")
 public class DocumentRestControllerV1 {
 
   private final DocumentService documentService;
@@ -52,13 +53,13 @@ public class DocumentRestControllerV1 {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @GetMapping(value = "")
+  @GetMapping()
   public ResponseEntity<List<DocumentDTO>> getAllDocument() {
     List<DocumentDTO> result = documentService.getAll();
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @PostMapping("/add")
+  @PostMapping()
   public UploadFileResponse uploadFile(
       Principal principal,
       @RequestParam("file") MultipartFile file,
@@ -111,7 +112,7 @@ public class DocumentRestControllerV1 {
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
-  @DeleteMapping("{id}/delete")
+  @DeleteMapping("/{id}")
   public ResponseEntity deleteComment(
       Principal principal,
       @PathVariable Long id){

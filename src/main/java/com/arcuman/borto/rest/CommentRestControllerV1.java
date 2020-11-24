@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping(value = "/api/v1/documents/{id}/comments/")
+@RequestMapping(value = "/api/v1/documents/{id}/comments")
 public class CommentRestControllerV1 {
   private final CommentService commentService;
   private final DocumentService documentService;
@@ -27,7 +28,7 @@ public class CommentRestControllerV1 {
     this.documentService = documentService;
   }
 
-  @PostMapping(value = "/add")
+  @PostMapping()
   public ResponseEntity addComment(
       Principal principal,
       @PathVariable(name = "id") Long id,
@@ -36,7 +37,7 @@ public class CommentRestControllerV1 {
     commentService.addNewComment(commentDTO,id,principal.getName());
     return ResponseEntity.ok("Comment add successfully");
   }
-  @DeleteMapping(value = "/delete")
+  @DeleteMapping()
   public ResponseEntity deleteComment(
       Principal principal,
       @Param(value = "commentId") Long commentId
