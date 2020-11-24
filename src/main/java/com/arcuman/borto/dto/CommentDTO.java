@@ -12,16 +12,11 @@ public class CommentDTO {
 
   private String commentMsg;
 
-  private Long documentId;
-
-  private String userName;
-
   public CommentDTO() {}
 
-  public CommentDTO(String comment,Long documentId,String userName) {
+  public CommentDTO(Long id,String comment) {
+    this.id = id;
     this.commentMsg = comment;
-    this.documentId = documentId;
-    this.userName = userName;
   }
   public Comment toComment(){
     Comment comment = new Comment();

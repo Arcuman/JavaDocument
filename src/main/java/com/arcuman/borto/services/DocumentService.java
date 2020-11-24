@@ -16,7 +16,7 @@ public interface DocumentService {
 
   void addNewDoucment(DocumentDTO documentDTO,User user);
 
-  void deleteDoucmentById(Long id);
+  void deleteDoucmentById(Long id, String username);
 
   Resource loadFileAsResource(String fileName);
 

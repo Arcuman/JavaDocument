@@ -4,10 +4,12 @@ import com.arcuman.borto.dto.DocumentDTO;
 import com.arcuman.borto.dto.UploadFileResponse;
 import com.arcuman.borto.models.Document;
 import com.arcuman.borto.models.User;
+import com.arcuman.borto.services.CommentService;
 import com.arcuman.borto.services.DocumentService;
 import com.arcuman.borto.services.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,15 +30,35 @@ public class DocumentRestControllerV1 {
 
   private final DocumentService documentService;
   private final UserService userService;
+  private final CommentService commentService;
 
   public DocumentRestControllerV1(
-      DocumentService documentService,
-      UserService userService) {
+      DocumentService documentService, UserService userService, CommentService commentService) {
     this.documentService = documentService;
     this.userService = userService;
+    this.commentService = commentService;
   }
 
-  @PostMapping("/uploadFile")
+
+  @GetMapping(value = "{id}")
+  public ResponseEntity<DocumentDTO> getDocumentById(@PathVariable(name = "id") Long id) {
+    Document document = documentService.findById(id);
+
+    if (document == null) {
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    DocumentDTO result = DocumentDTO.fromDocument(document);
+    result.setComments(commentService.getAllFromDocument(id));
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  @GetMapping(value = "")
+  public ResponseEntity<List<DocumentDTO>> getAllDocument() {
+    List<DocumentDTO> result = documentService.getAll();
+    return new ResponseEntity<>(result, HttpStatus.OK);
+  }
+
+  @PostMapping("/add")
   public UploadFileResponse uploadFile(
       Principal principal,
       @RequestParam("file") MultipartFile file,
@@ -80,28 +102,20 @@ public class DocumentRestControllerV1 {
             "attachment; filename=\"" + resource.getFilename() + "\"")
         .body(resource);
   }
-  @GetMapping(value = "{id}")
-  public ResponseEntity<DocumentDTO> getDocumentById(@PathVariable(name = "id") Long id){
-    Document document = documentService.findById(id);
 
-    if(document == null){
-      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-    DocumentDTO result = DocumentDTO.fromDocument(document);
 
-    return new ResponseEntity<>(result, HttpStatus.OK);
-  }
-  @GetMapping(value = "")
-  public ResponseEntity<List<DocumentDTO>> getAllDocument(){
-    List<DocumentDTO> result = documentService.getAll();
-    return new ResponseEntity<>(result, HttpStatus.OK);
-  }
   @PostMapping(value = "/search")
   public ResponseEntity<List<DocumentDTO>> getDocumentsByDescription(
-      @RequestParam("search") String description
-  ){
+      @RequestParam("search") String description) {
     List<DocumentDTO> result = documentService.getAllByDescription(description);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
+  @DeleteMapping("{id}/delete")
+  public ResponseEntity deleteComment(
+      Principal principal,
+      @PathVariable Long id){
+    documentService.deleteDoucmentById(id, principal.getName());
+    return ResponseEntity.ok("Document delete successfully");
+  }
 }

@@ -10,7 +10,7 @@ public interface CommentService {
 
   List<CommentDTO> getAllFromDocument(Long documentId);
 
-  void addNewComment(CommentDTO commentDTO);
+  void addNewComment(CommentDTO commentDTO,Long id,String username);
 
-  void deleteCommentById(Long id);
+  void deleteComment(Long id,String username);
 }

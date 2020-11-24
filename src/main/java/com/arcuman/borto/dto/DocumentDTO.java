@@ -5,6 +5,8 @@ import com.arcuman.borto.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DocumentDTO {
@@ -16,6 +18,8 @@ public class DocumentDTO {
   private String description;
 
   private String fileName;
+
+  private List<CommentDTO> comments;
 
   public DocumentDTO() {}
 

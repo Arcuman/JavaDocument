@@ -4,6 +4,8 @@ import com.arcuman.borto.Repository.DocumentRepository;
 import com.arcuman.borto.dto.DocumentDTO;
 import com.arcuman.borto.exception.FileStorageException;
 import com.arcuman.borto.exception.MyFileNotFoundException;
+import com.arcuman.borto.exception.MyNotOwnerException;
+import com.arcuman.borto.models.Comment;
 import com.arcuman.borto.models.Document;
 import com.arcuman.borto.models.User;
 import com.arcuman.borto.property.FileStorageProperties;
@@ -72,9 +74,17 @@ public class DocumentServiceImpl implements DocumentService {
   }
 
   @Override
-  public void deleteDoucmentById(Long id) {
-    documentRepository.deleteById(id);
-    log.info("IN delete - document with id: ${id} successfully deleted");
+  public void deleteDoucmentById(Long id,String username) {
+    Document comment = documentRepository.findById(id).orElse(null);
+    if (comment != null && comment.getUser().getUsername().equals(username)) {
+      documentRepository.deleteById(id);
+      log.info("IN delete - comment with id: ${id} successfully deleted");
+    }
+    else
+    {
+      log.info("IN delete - document with id: ${id} successfully deleted");
+      throw new MyNotOwnerException("Document not belong to user with username " + username);
+    }
   }
 
 
