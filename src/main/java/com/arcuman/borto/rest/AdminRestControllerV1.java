@@ -29,9 +29,7 @@ public class AdminRestControllerV1 {
     if (user == null) {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
     AdminUserDto result = AdminUserDto.fromUser(user);
-
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 }

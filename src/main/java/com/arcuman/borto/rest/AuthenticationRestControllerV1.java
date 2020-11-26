@@ -1,5 +1,6 @@
 package com.arcuman.borto.rest;
 
+import com.arcuman.borto.dto.AuthResponceDTO;
 import com.arcuman.borto.dto.AuthenticationRequestDto;
 import com.arcuman.borto.dto.RegisterDTO;
 import com.arcuman.borto.models.User;
@@ -53,10 +54,7 @@ public class AuthenticationRestControllerV1 {
       }
 
       String token = jwtTokenProvider.createToken(username, user.getRoles());
-
-      Map<Object, Object> response = new HashMap<>();
-      response.put("username", username);
-      response.put("token", token);
+      AuthResponceDTO response = new AuthResponceDTO(username,token,user.getRoles().toString());
 
       return ResponseEntity.ok(response);
     } catch (AuthenticationException e) {

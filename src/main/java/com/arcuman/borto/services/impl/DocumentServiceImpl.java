@@ -2,24 +2,21 @@ package com.arcuman.borto.services.impl;
 
 import com.arcuman.borto.Repository.DocumentRepository;
 import com.arcuman.borto.dto.DocumentDTO;
+import com.arcuman.borto.exception.DocumentNotFoundException;
 import com.arcuman.borto.exception.FileStorageException;
 import com.arcuman.borto.exception.MyFileNotFoundException;
 import com.arcuman.borto.exception.MyNotOwnerException;
-import com.arcuman.borto.models.Comment;
 import com.arcuman.borto.models.Document;
 import com.arcuman.borto.models.User;
 import com.arcuman.borto.property.FileStorageProperties;
 import com.arcuman.borto.services.DocumentService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -36,8 +33,8 @@ public class DocumentServiceImpl implements DocumentService {
   private final DocumentRepository documentRepository;
   private final Path fileStorageLocation;
 
-
-  public DocumentServiceImpl(DocumentRepository documentRepository,FileStorageProperties fileStorageProperties) {
+  public DocumentServiceImpl(
+    DocumentRepository documentRepository, FileStorageProperties fileStorageProperties) {
     this.documentRepository = documentRepository;
     this.fileStorageLocation =
         Paths.get(fileStorageProperties.getUploadDir()).toAbsolutePath().normalize();
@@ -52,41 +49,70 @@ public class DocumentServiceImpl implements DocumentService {
   @Override
   public List<DocumentDTO> getAll() {
     return documentRepository.findAll().stream()
-        .map((DocumentDTO::fromDocument)).collect(Collectors.toList());
+        .map((DocumentDTO::fromDocument))
+        .collect(Collectors.toList());
   }
+
   @Override
   public List<DocumentDTO> getAllByDescription(String description) {
     if (description != null && !description.isEmpty()) {
       return documentRepository.findByDescriptionContaining(description).stream()
-          .map((DocumentDTO::fromDocument)).collect(Collectors.toList());
+          .map((DocumentDTO::fromDocument))
+          .collect(Collectors.toList());
     } else {
       return documentRepository.findAll().stream()
-          .map((DocumentDTO::fromDocument)).collect(Collectors.toList());
+          .map((DocumentDTO::fromDocument))
+          .collect(Collectors.toList());
     }
   }
 
   @Override
   public void addNewDoucment(DocumentDTO documentDTO, User user) {
-    Document document = documentDTO.toDocument();
-    document.setUser(user);
-    documentRepository.save(document);
-    log.info("IN addNewDoucment - document added successfully");
+    if (user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
+      Document document = documentDTO.toDocument();
+      document.setUser(user);
+      documentRepository.save(document);
+      log.info("IN addNewDoucment - document added successfully");
+    } else {
+      log.info("IN addNewDoucment - document wasn't add. Forbidden");
+      throw new MyNotOwnerException("");
+    }
   }
 
   @Override
-  public void deleteDoucmentById(Long id,String username) {
-    Document comment = documentRepository.findById(id).orElse(null);
-    if (comment != null && comment.getUser().getUsername().equals(username)) {
+  public void deleteDoucmentById(Long id, String username) throws IOException {
+    Document document =
+        documentRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new DocumentNotFoundException(
+                        "Document not exist with id :" + id));
+    if (document != null && document.getUser().getUsername().equals(username)) {
+      Path filePath = this.fileStorageLocation.resolve(document.getFilename()).normalize();
+      Files.deleteIfExists(filePath);
       documentRepository.deleteById(id);
-      log.info("IN delete - comment with id: ${id} successfully deleted");
-    }
-    else
-    {
-      log.info("IN delete - document with id: ${id} successfully deleted");
+      log.info("IN deleteDoucmentById - document with id: ${id} successfully deleted");
+    } else {
+      log.info("IN deleteDoucmentById - document with id: ${id} successfully deleted");
       throw new MyNotOwnerException("Document not belong to user with username " + username);
     }
   }
 
+  @Override
+  public void updateDoucment(Long id,DocumentDTO documentDTO) {
+    Document document =
+        documentRepository
+            .findById(id)
+            .orElseThrow(
+                () ->
+                    new DocumentNotFoundException(
+                        "Document not exist with id :" + id));
+    document.setTitle(documentDTO.getTitle());
+    document.setDescription(documentDTO.getDescription());
+    Document updatedDocument = documentRepository.save(document);
+    log.info("IN updateDoucment - document with id: ${id} successfully update");
+    }
 
   @Override
   public String storeFile(MultipartFile file) {
@@ -121,7 +147,7 @@ public class DocumentServiceImpl implements DocumentService {
       return null;
     }
 
-    log.info("IN findById - document: {} found by id: {}", result,id);
+    log.info("IN findById - document: {} found by id: {}", result, id);
     return result;
   }
 

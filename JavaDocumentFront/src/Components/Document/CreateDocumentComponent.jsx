@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import DocumentService from "../services/DocumentService";
+import DocumentService from "../../services/DocumentService";
+
 class CreateDocumentComponent extends Component {
   constructor(props) {
     super(props);
@@ -9,10 +10,11 @@ class CreateDocumentComponent extends Component {
       id: this.props.match.params.id,
       title: "",
       description: "",
-      fileName: "",
+      file: null,
     };
     this.changeTitleHandler = this.changeTitleHandler.bind(this);
     this.changeDescriptionHandler = this.changeDescriptionHandler.bind(this);
+    this.changeFileHandler = this.changeFileHandler.bind(this);
     this.saveOrUpdateDocument = this.saveOrUpdateDocument.bind(this);
   }
 
@@ -25,26 +27,28 @@ class CreateDocumentComponent extends Component {
         this.setState({
           title: document.title,
           description: document.description,
-          fileName: document.fileName,
         });
       });
     }
   }
   saveOrUpdateDocument = (e) => {
     e.preventDefault();
-    let document = {
-      title: this.state.title,
-      description: this.state.description,
-      fileName: this.state.fileName,
-    };
-    console.log("document => " + JSON.stringify(document));
 
     if (this.state.id === "_add") {
-      DocumentService.createDocument(document).then((res) => {
+      DocumentService.createDocument(
+        this.state.file,
+        this.state.title,
+        this.state.description
+      ).then((res) => {
         this.props.history.push("/documents");
       });
     } else {
-      DocumentService.updateDocument(document, this.state.id).then((res) => {
+      let document = {
+        title: this.state.title,
+        description: this.state.description,
+      };
+      console.log("document => " + JSON.stringify(document));
+      DocumentService.updateDocument(this.state.id, document).then((res) => {
         this.props.history.push("/documents");
       });
     }
@@ -58,8 +62,8 @@ class CreateDocumentComponent extends Component {
     this.setState({ description: event.target.value });
   };
 
-  changeFileNameHandler = (event) => {
-    this.setState({ fileName: event.target.value });
+  changeFileHandler = (event) => {
+    this.setState({ file: event.target.files[0] });
   };
 
   cancel() {
@@ -73,6 +77,23 @@ class CreateDocumentComponent extends Component {
       return <h3 className="text-center">Update Document</h3>;
     }
   }
+  getFile() {
+    if (this.state.id === "_add") {
+      return (
+        <div className="form-group">
+          <label> File: </label>
+          <input
+            type="file"
+            name="file"
+            className="form-control-file"
+            onChange={this.changeFileHandler}
+          />
+        </div>
+      );
+    } else {
+      return;
+    }
+  }
   render() {
     return (
       <div>
@@ -84,9 +105,9 @@ class CreateDocumentComponent extends Component {
               <div className="card-body">
                 <form>
                   <div className="form-group">
-                    <label> First Name: </label>
+                    <label> Title: </label>
                     <input
-                      placeholder="First Name"
+                      placeholder="Title"
                       name="title"
                       className="form-control"
                       value={this.state.title}
@@ -94,26 +115,16 @@ class CreateDocumentComponent extends Component {
                     />
                   </div>
                   <div className="form-group">
-                    <label> Last Name: </label>
+                    <label> Description: </label>
                     <input
-                      placeholder="Last Name"
+                      placeholder="Description"
                       name="description"
                       className="form-control"
                       value={this.state.description}
                       onChange={this.changeDescriptionHandler}
                     />
                   </div>
-                  <div className="form-group">
-                    <label> FileName: </label>
-                    <input
-                      placeholder="FileName Address"
-                      name="fileName"
-                      className="form-control"
-                      value={this.state.fileName}
-                      onChange={this.changeFileNameHandler}
-                    />
-                  </div>
-
+                  {this.getFile()}
                   <button
                     className="btn btn-success"
                     onClick={this.saveOrUpdateDocument}

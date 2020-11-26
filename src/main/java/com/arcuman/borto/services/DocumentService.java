@@ -16,7 +16,9 @@ public interface DocumentService {
 
   void addNewDoucment(DocumentDTO documentDTO,User user);
 
-  void deleteDoucmentById(Long id, String username);
+  void updateDoucment(Long id,DocumentDTO documentDTO);
+
+  void deleteDoucmentById(Long id, String username) throws IOException;
 
   Resource loadFileAsResource(String fileName);
 

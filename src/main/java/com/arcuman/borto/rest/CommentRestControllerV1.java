@@ -34,6 +34,7 @@ public class CommentRestControllerV1 {
       @PathVariable(name = "id") Long id,
       @RequestBody CommentDTO commentDTO
   ){
+
     commentService.addNewComment(commentDTO,id,principal.getName());
     return ResponseEntity.ok("Comment add successfully");
   }

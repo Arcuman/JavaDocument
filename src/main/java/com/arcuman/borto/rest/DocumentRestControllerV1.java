@@ -1,7 +1,6 @@
 package com.arcuman.borto.rest;
 
 import com.arcuman.borto.dto.DocumentDTO;
-import com.arcuman.borto.dto.UploadFileResponse;
 import com.arcuman.borto.models.Document;
 import com.arcuman.borto.models.User;
 import com.arcuman.borto.services.CommentService;
@@ -9,7 +8,6 @@ import com.arcuman.borto.services.DocumentService;
 import com.arcuman.borto.services.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.io.Resource;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -60,7 +58,7 @@ public class DocumentRestControllerV1 {
   }
 
   @PostMapping()
-  public UploadFileResponse uploadFile(
+  public ResponseEntity uploadFile(
       Principal principal,
       @RequestParam("file") MultipartFile file,
       @RequestParam("title") String title,
@@ -75,7 +73,7 @@ public class DocumentRestControllerV1 {
             .toUriString();
     User user = userService.findByUsername(principal.getName());
     documentService.addNewDoucment(new DocumentDTO(title, description, fileName), user);
-    return new UploadFileResponse(fileName, fileDownloadUri, file.getContentType(), file.getSize());
+    return ResponseEntity.ok("Document add");
   }
 
   @GetMapping("/downloadFile/{fileName:.+}")
@@ -115,8 +113,15 @@ public class DocumentRestControllerV1 {
   @DeleteMapping("/{id}")
   public ResponseEntity deleteComment(
       Principal principal,
-      @PathVariable Long id){
+      @PathVariable Long id) throws IOException {
     documentService.deleteDoucmentById(id, principal.getName());
     return ResponseEntity.ok("Document delete successfully");
+  }
+  @PutMapping("/{id}")
+  public ResponseEntity deleteComment(
+      @PathVariable Long id,
+      @RequestBody DocumentDTO documentDTO){
+    documentService.updateDoucment(id,documentDTO);
+    return ResponseEntity.ok("Document update successfully");
   }
 }
