@@ -70,14 +70,19 @@ public class AuthenticationRestControllerV1 {
     if (!userService.isExistEmail(signupRequest.getEmail())) {
       return ResponseEntity.badRequest().body(new Exception("Email is already taken"));
     }
-    User newUser = new User();
-    newUser.setUsername(signupRequest.getUsername());
-    newUser.setEmail(signupRequest.getEmail());
-    newUser.setFirstName(signupRequest.getFirstName());
-    newUser.setLastName(signupRequest.getLastName());
-    newUser.setPassword(signupRequest.getPassword());
-    userService.register(newUser);
-    log.info("IN register - user with username: {} successfully registered", newUser.getUsername());
+    try{
+      User newUser = new User();
+      newUser.setUsername(signupRequest.getUsername());
+      newUser.setEmail(signupRequest.getEmail());
+      newUser.setFirstName(signupRequest.getFirstName());
+      newUser.setLastName(signupRequest.getLastName());
+      newUser.setPassword(signupRequest.getPassword());
+      userService.register(newUser);
+      log.info("IN register - user with username: {} successfully registered", newUser.getUsername());
+    }
+    catch(Exception e){
+      log.info(e);
+    }
     return ResponseEntity.ok("User registered successfully");
   }
 }

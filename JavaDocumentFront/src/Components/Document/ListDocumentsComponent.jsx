@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import DocumentService from "../../services/DocumentService";
 import AuthService from "../../services/AuthService";
+import Search from "./SearchComponent";
 class ListDocumentsComponent extends Component {
   constructor(props) {
     super(props);
@@ -61,6 +62,7 @@ class ListDocumentsComponent extends Component {
           </div>
         )}
         <br></br>
+        <Search />
         <div className="row">
           <table className="table table-striped table-bordered">
             <thead>
